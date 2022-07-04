@@ -1,26 +1,56 @@
-figma.showUI(__html__);
+import {MessageType} from '../share/constant';
 
-figma.ui.onmessage = (msg) => {
-    if (msg.type === 'create-rectangles') {
-        const nodes = [];
+const STORAGE_NAME = 'favStorage';
 
-        for (let i = 0; i < msg.count; i++) {
-            const rect = figma.createRectangle();
-            rect.x = i * 150;
-            rect.fills = [{type: 'SOLID', color: {r: 1, g: 0.5, b: 0}}];
-            figma.currentPage.appendChild(rect);
-            nodes.push(rect);
-        }
+figma.showUI(__html__, {
+    width: 400,
+    height: 398,
+});
 
-        figma.currentPage.selection = nodes;
-        figma.viewport.scrollAndZoomIntoView(nodes);
+let currentTextSelection = null;
 
-        // This is how figma responds back to the ui
-        figma.ui.postMessage({
-            type: 'create-rectangles',
-            message: `Created ${msg.count} Rectangles`,
-        });
+figma.on('selectionchange', () => {
+    if (figma.currentPage.selection.length === 1 && figma.currentPage.selection[0].type === 'TEXT') {
+        currentTextSelection = figma.currentPage.selection[0];
+    } else {
+        currentTextSelection = null;
     }
+});
 
-    figma.closePlugin();
-};
+Promise.all([figma.listAvailableFontsAsync(), figma.clientStorage.getAsync(STORAGE_NAME)]).then(
+    ([fontList, storage]) => {
+        const favStorage = storage != null ? new Set(JSON.parse(storage)) : new Set();
+        figma.ui.postMessage({
+            type: MessageType.FONT_LIST_LOADED,
+            data: {
+                fontList: fontList,
+                favStorage: JSON.parse(storage),
+            },
+        });
+
+        figma.ui.onmessage = (msg) => {
+            if (msg.type === MessageType.ADD_OR_REMOVE_MARKED_FONT) {
+                addOrRemoveFavFont(msg.data.family);
+            }
+            if (msg.type === MessageType.FONT_CLICK && currentTextSelection != null) {
+                console.log(currentTextSelection.fontName);
+                console.log(msg.data);
+                figma.loadFontAsync(msg.data as FontName).then(() => {
+                    currentTextSelection.fontName = msg.data as FontName;
+                    console.log(currentTextSelection.fontName);
+                });
+            }
+        };
+
+        function addOrRemoveFavFont(font: string) {
+            if (favStorage.has(font)) {
+                favStorage.delete(font);
+            } else {
+                favStorage.add(font);
+            }
+            figma.clientStorage.setAsync(STORAGE_NAME, JSON.stringify([...favStorage])).then(() => {
+                console.log(JSON.stringify([...favStorage]));
+            });
+        }
+    }
+);
