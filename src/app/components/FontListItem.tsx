@@ -109,7 +109,19 @@ const FontItemWrap = styled.div<{hide?: boolean}>`
     }
 `;
 
-const FlexRowLayout = styled.div`
+interface LayoutProps {
+    readonly selected?: boolean;
+}
+
+interface LayoutChangeProps {
+    readonly backgroundColor: string;
+    readonly hoverBackgroundColor: string;
+}
+
+const FlexRowLayout = styled.div.attrs<LayoutProps, LayoutChangeProps>(({selected}) => ({
+    backgroundColor: selected ? '#18A0FB' : '',
+    hoverBackgroundColor: selected ? '#189dfd' : '#f5f5f5',
+}))<LayoutProps>`
     height: 28px;
     display: flex;
     align-items: center;
@@ -118,24 +130,30 @@ const FlexRowLayout = styled.div`
 
 const FlexRowStartEndLayout = styled(FlexRowLayout)``;
 
-const FontFamilyItem = styled(FlexRowLayout)<{selected?: boolean}>`
-    background-color: ${(props) => (props.selected ? '#18A0FB' : '')};
+const FontFamilyItem = styled(FlexRowLayout)`
+    background-color: ${(props) => props.backgroundColor};
 
     :hover {
-        background-color: ${(props) => (props.selected ? '#189dfd' : '#f5f5f5')};
+        background-color: ${(props) => props.hoverBackgroundColor};
     }
 `;
 
-const FontStyleItem = styled(FlexRowLayout)<{selected?: boolean}>`
-    background-color: ${(props) => (props.selected ? '#18A0FB' : '')};
+const FontStyleItem = styled(FlexRowLayout)`
+    background-color: ${(props) => props.backgroundColor};
 
     :hover {
-        background-color: ${(props) => (props.selected ? '#189dfd' : '#f5f5f5')};
+        background-color: ${(props) => props.hoverBackgroundColor};
     }
 `;
 
-const IconButton = styled.span<{hide?: boolean}>`
-    visibility: ${(props) => (props.hide ? 'hidden' : 'visible')};
+interface IconButtonProps {
+    readonly hide?: boolean;
+}
+
+const IconButton = styled.span.attrs<IconButtonProps, {visibility: string}>(({hide}) => ({
+    visibility: hide ? 'hidden' : 'visible',
+}))<IconButtonProps>`
+    visibility: ${(props) => props.visibility};
     height: 28px;
 
     display: flex;
@@ -153,39 +171,45 @@ const FoldButton = styled(IconButton)`
     margin-left: 4px;
 `;
 
-const Text = styled.span<{
-    left?: number;
-    right?: number;
-    fontFamily?: string;
-    fontStyle?: string;
-    active: boolean;
-    selected: boolean;
-}>`
+interface TextProps {
+    readonly left?: number;
+    readonly right?: number;
+    readonly fontFamily?: string;
+    readonly fontStyle?: string;
+    readonly active: boolean;
+    readonly selected: boolean;
+}
+
+interface TextChangeProps {
+    readonly marginLeft: string;
+    readonly marginRight: string;
+    readonly cursor: string;
+    readonly color: string;
+    readonly fontFamily: string;
+}
+
+// todo 这里用attrs的实际作用是什么，目前只是console建议使用才改的
+const Text = styled.span.attrs<TextProps, TextChangeProps>((props) => ({
+    marginLeft: `${props.left ?? 6}px`,
+    marginRight: `${props.right ?? 0}px`,
+    cursor: props.active ? 'pointer' : 'auto',
+    color: props.active ? (props.selected ? '#FFF' : '#000') : '#B2B2B2',
+    fontFamily: `${props.fontFamily + ',Inter, sans-serif' ?? 'Inter, sans-serif'}`,
+}))<TextProps>`
     height: 28px;
     line-height: 28px;
-    margin-left: ${(props) => props.left ?? 6}px;
-    margin-right: ${(props) => props.right ?? 0}px;
+    margin-left: ${({marginLeft}) => marginLeft};
+    margin-right: ${({marginRight}) => marginRight};
 
     display: flex;
     justify-content: center;
     align-items: center;
 
     user-select: none;
-    cursor: ${(props) => (props.active ? 'pointer' : 'auto')};
+    cursor: ${({cursor}) => cursor};
 
-    color: ${(props) => (props.active ? (props.selected ? '#FFF' : '#000') : '#B2B2B2')};
-    font-family: ${(props) => `${props.fontFamily},` ?? ''} Inter, sans-serif;
-    font-weight: ${(props) => {
-        let result = 'normal';
-        switch (props.fontStyle?.toLowerCase() ?? '') {
-            case 'bold':
-                result = 'bold';
-                break;
-            default:
-                break;
-        }
-        return result;
-    }};
+    color: ${({color}) => color};
+    font-family: ${({fontFamily}) => fontFamily};
     font-size: 12px;
 `;
 
