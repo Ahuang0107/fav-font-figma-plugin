@@ -8,6 +8,15 @@ figma.showUI(__html__, {
 });
 
 let currentTextSelection = null;
+if (figma.currentPage.selection.length === 1 && figma.currentPage.selection[0].type === 'TEXT') {
+    currentTextSelection = figma.currentPage.selection[0];
+    figma.ui.postMessage({
+        type: MessageType.SELECTION_CHANGE,
+        data: {
+            layer: currentTextSelection,
+        },
+    });
+}
 
 figma.on('selectionchange', () => {
     if (figma.currentPage.selection.length === 1 && figma.currentPage.selection[0].type === 'TEXT') {
@@ -15,6 +24,12 @@ figma.on('selectionchange', () => {
     } else {
         currentTextSelection = null;
     }
+    figma.ui.postMessage({
+        type: MessageType.SELECTION_CHANGE,
+        data: {
+            layer: currentTextSelection,
+        },
+    });
 });
 
 Promise.all([figma.listAvailableFontsAsync(), figma.clientStorage.getAsync(STORAGE_NAME)]).then(
@@ -33,11 +48,8 @@ Promise.all([figma.listAvailableFontsAsync(), figma.clientStorage.getAsync(STORA
                 addOrRemoveFavFont(msg.data.family);
             }
             if (msg.type === MessageType.FONT_CLICK && currentTextSelection != null) {
-                console.log(currentTextSelection.fontName);
-                console.log(msg.data);
                 figma.loadFontAsync(msg.data as FontName).then(() => {
                     currentTextSelection.fontName = msg.data as FontName;
-                    console.log(currentTextSelection.fontName);
                 });
             }
         };

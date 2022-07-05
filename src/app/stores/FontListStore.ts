@@ -2,8 +2,10 @@ import {action, computed, makeObservable, observable} from 'mobx';
 import {Font, FontItem} from '~/models/Font';
 
 export class FontListStore {
+    // 会存储加载来的所有字体，是按照字体family group by过的
     fontList: FontItem[] = [];
 
+    // 存储被mark的字体的family名称
     markedFonts: string[] = [];
 
     constructor() {

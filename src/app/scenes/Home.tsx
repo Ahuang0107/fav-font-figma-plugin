@@ -14,6 +14,7 @@ const Home = () => {
     const [starSelected, setStarSelected] = useState(false);
     const options = ['字体分类选择：暂未实现该功能'];
     const [, setSelected] = useState<string>(options[0]);
+    const [currentLayer, setCurrentLayer] = useState<{id: string} | null>(null);
     useEffect(() => {
         window.onmessage = (event) => {
             const {type} = event.data.pluginMessage;
@@ -21,6 +22,9 @@ const Home = () => {
                 const {data} = event.data.pluginMessage;
                 fontListStore.initFontList(data.fontList);
                 fontListStore.initMarkedFonts(data.favStorage);
+            } else if (type === MessageType.SELECTION_CHANGE) {
+                const {data} = event.data.pluginMessage;
+                setCurrentLayer(data.layer);
             }
         };
     }, []);
@@ -38,7 +42,12 @@ const Home = () => {
             </SelectContainer>
             <ListContainer>
                 {fontListStore.fontList.map((font) => (
-                    <FontListItem font={font} key={font.family} hide={starSelected && !font.isMarked} />
+                    <FontListItem
+                        font={font}
+                        key={font.family}
+                        hide={starSelected && !font.isMarked}
+                        active={currentLayer !== null}
+                    />
                 ))}
             </ListContainer>
         </Container>

@@ -13,12 +13,21 @@ interface PropsType {
     font: FontItem;
     hide?: boolean;
     language?: LanguageType;
+    active?: boolean;
 }
 
-const FontListItem = ({font, hide = false, language = 'EN'}: PropsType) => {
+const FontListItem = ({font, hide = false, language = 'EN', active = false}: PropsType) => {
     const {fontListStore} = useStores();
     const singleStyle = font.styles.length === 1;
     const [folded, seFolded] = useState(true);
+    // const click = (fontName) => {
+    //     parent.postMessage({
+    //         pluginMessage: {
+    //             type: MessageType.SELECTION_CHANGE,
+    //             data: fontName
+    //         }
+    //     }, '*')
+    // }
     return (
         <FontItemWrap hide={hide}>
             <FontFamilyItem>
@@ -29,13 +38,13 @@ const FontListItem = ({font, hide = false, language = 'EN'}: PropsType) => {
                     <FoldButton hide={singleStyle} onClick={() => seFolded(!folded)}>
                         {folded ? <ArrowIcon /> : <ArrowDownIcon />}
                     </FoldButton>
-                    <Text>
+                    <Text active={active}>
                         {font.family}
                         {singleStyle && ` ${font.styles[0]}`}
                     </Text>
                 </FlexRowStartEndLayout>
                 <FlexRowStartEndLayout>
-                    <Text right={12} fontFamily={font.family}>
+                    <Text right={12} fontFamily={font.family} active={active}>
                         {language === 'EN' ? 'Sample' : '字体样式'}
                     </Text>
                 </FlexRowStartEndLayout>
@@ -44,10 +53,12 @@ const FontListItem = ({font, hide = false, language = 'EN'}: PropsType) => {
                 font.styles.map((style) => (
                     <FontStyleItem key={font.family + style}>
                         <FlexRowStartEndLayout>
-                            <Text left={60}>{style}</Text>
+                            <Text left={60} active={active}>
+                                {style}
+                            </Text>
                         </FlexRowStartEndLayout>
                         <FlexRowStartEndLayout>
-                            <Text right={12} fontFamily={font.family} fontStyle={style}>
+                            <Text right={12} fontFamily={font.family} fontStyle={style} active={active}>
                                 {language === 'EN' ? 'Sample' : '字体样式'}
                             </Text>
                         </FlexRowStartEndLayout>
@@ -103,6 +114,7 @@ const Text = styled.span<{
     right?: number;
     fontFamily?: string;
     fontStyle?: string;
+    active: boolean;
 }>`
     height: 28px;
     margin-left: ${(props) => props.left ?? 6}px;
@@ -113,7 +125,9 @@ const Text = styled.span<{
     align-items: center;
 
     user-select: none;
+    cursor: ${(props) => (props.active ? 'pointer' : 'auto')};
 
+    color: ${(props) => (props.active ? '#000' : '#B2B2B2')};
     font-family: ${(props) => `${props.fontFamily},` ?? ''} Inter, sans-serif;
     font-weight: ${(props) => {
         let result = 'normal';
