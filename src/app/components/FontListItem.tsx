@@ -7,7 +7,7 @@ import useStores from '~/hooks/useStores';
 import ArrowIcon from '~/components/icon/ArrowUpIcon';
 import ArrowDownIcon from '~/components/icon/ArrowDownIcon';
 import StarIcon from '~/components/icon/StarIcon';
-import {LanguageType} from '../../share/constant';
+import {LanguageType, MessageType} from '../../share/constant';
 
 interface PropsType {
     font: FontItem;
@@ -22,14 +22,17 @@ const FontListItem = ({font, hide = false, language = 'EN', currentFontName = nu
     const {fontListStore} = useStores();
     const singleStyle = font.styles.length === 1;
     const [folded, seFolded] = useState(true);
-    // const click = (fontName) => {
-    //     parent.postMessage({
-    //         pluginMessage: {
-    //             type: MessageType.SELECTION_CHANGE,
-    //             data: fontName
-    //         }
-    //     }, '*')
-    // }
+    const fontClick = (fontName) => {
+        parent.postMessage(
+            {
+                pluginMessage: {
+                    type: MessageType.FONT_CLICK,
+                    data: fontName,
+                },
+            },
+            '*'
+        );
+    };
     return (
         <FontItemWrap hide={hide}>
             <FontFamilyItem selected={isCurrent}>
@@ -48,7 +51,11 @@ const FontListItem = ({font, hide = false, language = 'EN', currentFontName = nu
                             <ArrowDownIcon fill={isCurrent ? '#FFF' : '#333'} />
                         )}
                     </FoldButton>
-                    <Text active={active} selected={isCurrent}>
+                    <Text
+                        active={active}
+                        selected={isCurrent}
+                        onClick={() => fontClick({family: font.family, style: font.styles[0]})}
+                    >
                         {font.family}
                         {singleStyle && ` ${font.styles[0]}`}
                     </Text>
@@ -66,7 +73,12 @@ const FontListItem = ({font, hide = false, language = 'EN', currentFontName = nu
                     return (
                         <FontStyleItem key={font.family + style} selected={isStyleCurrent}>
                             <FlexRowStartEndLayout>
-                                <Text left={60} active={active} selected={isStyleCurrent}>
+                                <Text
+                                    left={60}
+                                    active={active}
+                                    selected={isStyleCurrent}
+                                    onClick={() => fontClick({family: font.family, style: style})}
+                                >
                                     {style}
                                 </Text>
                             </FlexRowStartEndLayout>
