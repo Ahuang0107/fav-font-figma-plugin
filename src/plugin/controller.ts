@@ -48,12 +48,24 @@ Promise.all([figma.listAvailableFontsAsync(), figma.clientStorage.getAsync(STORA
                 addOrRemoveFavFont(msg.data.family);
             }
             if (msg.type === MessageType.FONT_CLICK && currentTextSelection != null) {
-                figma.loadFontAsync(msg.data as FontName).then(() => {
-                    currentTextSelection.fontName = msg.data as FontName;
-                    figma.ui.postMessage({
-                        type: MessageType.FONT_CHANGED,
+                figma
+                    .loadFontAsync(msg.data as FontName)
+                    .then(() => {
+                        currentTextSelection.fontName = msg.data as FontName;
+                        figma.ui.postMessage({
+                            type: MessageType.FONT_CHANGED,
+                        });
+                    })
+                    .catch((reason) => {
+                        console.log(reason);
+                        figma.notify(reason, {error: true});
+                        figma.ui.postMessage({
+                            type: MessageType.SELECTION_CHANGE,
+                            data: {
+                                layer: JSON.stringify(currentTextSelection?.fontName),
+                            },
+                        });
                     });
-                });
             }
         };
 

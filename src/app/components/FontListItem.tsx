@@ -14,7 +14,7 @@ interface PropsType {
     hide?: boolean;
     language?: LanguageType;
     currentFontName?: FontName;
-    onClick: (fontName: FontName) => void;
+    onClick: (fontName: FontName, currentFontName: FontName) => void;
 }
 
 const FontListItem = ({font, hide = false, currentFontName = null, onClick}: PropsType) => {
@@ -56,9 +56,11 @@ const FontListItem = ({font, hide = false, currentFontName = null, onClick}: Pro
                         active={active}
                         selected={isCurrent}
                         onClick={() => {
-                            const fontName = {family: font.family, style: font.styles[0]};
-                            fontClick(fontName);
-                            onClick(fontName);
+                            if (active) {
+                                const fontName = {family: font.family, style: font.styles[0]};
+                                fontClick(fontName);
+                                onClick(fontName, currentFontName);
+                            }
                         }}
                     >
                         {font.family}
@@ -83,9 +85,11 @@ const FontListItem = ({font, hide = false, currentFontName = null, onClick}: Pro
                                     active={active}
                                     selected={isStyleCurrent}
                                     onClick={() => {
-                                        const fontName = {family: font.family, style: style};
-                                        fontClick(fontName);
-                                        onClick(fontName);
+                                        if (active) {
+                                            const fontName = {family: font.family, style: style};
+                                            fontClick(fontName);
+                                            onClick(fontName, currentFontName);
+                                        }
                                     }}
                                 >
                                     {style}

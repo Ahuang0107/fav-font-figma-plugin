@@ -25,18 +25,24 @@ const Home = () => {
                 const {data} = event.data.pluginMessage;
                 fontListStore.initFontList(data.fontList);
                 fontListStore.initMarkedFonts(data.favStorage);
-                setLoading(false);
+                setLoading(currentLayerFontName !== null);
             } else if (type === MessageType.SELECTION_CHANGE) {
                 const {data} = event.data.pluginMessage;
                 setCurrentLayerFontName(JSON.parse(data?.layer ?? null));
+                setLoading(currentLayerFontName !== null);
             } else if (type === MessageType.FONT_CHANGED) {
-                setLoading(false);
+                setLoading(currentLayerFontName !== null);
             }
         };
     }, []);
 
     return (
         <Container>
+            {loading && (
+                <LoadingCover>
+                    <Spinner />
+                </LoadingCover>
+            )}
             <SelectContainer>
                 <Select options={options} onChange={(v) => setSelected(v)} />
                 <IconButton active={starSelected} onClick={() => setStarSelected(!starSelected)}>
@@ -47,19 +53,14 @@ const Home = () => {
                 </IconButton>
             </SelectContainer>
             <ListContainer>
-                {loading && (
-                    <LoadingCover>
-                        <Spinner />
-                    </LoadingCover>
-                )}
                 {fontListStore.fontList.map((font) => (
                     <FontListItem
                         font={font}
                         key={font.family}
                         hide={starSelected && !font.isMarked}
                         currentFontName={currentLayerFontName}
-                        onClick={(fontName) => {
-                            setLoading(true);
+                        onClick={(fontName, currentFontName) => {
+                            setLoading(currentFontName !== null);
                             setCurrentLayerFontName(fontName);
                         }}
                     />
