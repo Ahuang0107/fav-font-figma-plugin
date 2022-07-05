@@ -125,6 +125,7 @@ const Text = styled.span<{
     active: boolean;
 }>`
     height: 28px;
+    line-height: 28px;
     margin-left: ${(props) => props.left ?? 6}px;
     margin-right: ${(props) => props.right ?? 0}px;
 
