@@ -16,6 +16,7 @@ const IconButton = ({children, active, onClick}: Props) => (
 const RealButton = styled.button<{active?: boolean}>`
     width: 32px;
     height: 32px;
+    flex: 32px 0 0;
     margin: 0;
     padding: 0;
     border: 0;

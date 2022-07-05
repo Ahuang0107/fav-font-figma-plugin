@@ -17,7 +17,7 @@ interface PropsType {
     onClick: (fontName: FontName) => void;
 }
 
-const FontListItem = ({font, hide = false, language = 'EN', currentFontName = null, onClick}: PropsType) => {
+const FontListItem = ({font, hide = false, currentFontName = null, onClick}: PropsType) => {
     const active = currentFontName !== null;
     const isCurrent = active && font.family === currentFontName.family;
     const {fontListStore} = useStores();
@@ -66,9 +66,9 @@ const FontListItem = ({font, hide = false, language = 'EN', currentFontName = nu
                     </Text>
                 </FlexRowStartEndLayout>
                 <FlexRowStartEndLayout>
-                    <Text right={12} fontFamily={font.family} active={active} selected={isCurrent}>
-                        {language === 'EN' ? 'Sample' : '字体样式'}
-                    </Text>
+                    {/*<Text right={12} fontFamily={font.family} active={active} selected={isCurrent}>*/}
+                    {/*    {language === 'EN' ? 'Sample' : '字体样式'}*/}
+                    {/*</Text>*/}
                 </FlexRowStartEndLayout>
             </FontFamilyItem>
             {!folded &&
@@ -92,15 +92,15 @@ const FontListItem = ({font, hide = false, language = 'EN', currentFontName = nu
                                 </Text>
                             </FlexRowStartEndLayout>
                             <FlexRowStartEndLayout>
-                                <Text
-                                    right={12}
-                                    fontFamily={font.family}
-                                    fontStyle={style}
-                                    active={active}
-                                    selected={isStyleCurrent}
-                                >
-                                    {language === 'EN' ? 'Sample' : '字体样式'}
-                                </Text>
+                                {/*<Text*/}
+                                {/*    right={12}*/}
+                                {/*    fontFamily={font.family}*/}
+                                {/*    fontStyle={style}*/}
+                                {/*    active={active}*/}
+                                {/*    selected={isStyleCurrent}*/}
+                                {/*>*/}
+                                {/*    {language === 'EN' ? 'Sample' : '字体样式'}*/}
+                                {/*</Text>*/}
                             </FlexRowStartEndLayout>
                         </FontStyleItem>
                     );
