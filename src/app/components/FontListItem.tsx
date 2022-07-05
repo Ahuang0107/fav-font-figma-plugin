@@ -112,10 +112,6 @@ const FontListItem = ({font, hide = false, currentFontName = null, onClick}: Pro
 const FontItemWrap = styled.div<{hide?: boolean}>`
     display: ${(props) => (props.hide ? 'none' : 'block')};
     width: 100%;
-
-    :hover {
-        background-color: #f5f5f5;
-    }
 `;
 
 interface LayoutProps {

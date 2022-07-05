@@ -103,7 +103,9 @@ const ListContainer = styled.div`
 const LoadingCover = styled.div`
     width: 100%;
     height: 100%;
-    position: absolute;
+    position: fixed;
+    top: 0;
+    left: 0;
     transition: all 1s linear;
     background-color: white;
     opacity: 0.6;
