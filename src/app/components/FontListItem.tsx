@@ -2,7 +2,7 @@ import * as React from 'react';
 import {useState} from 'react';
 import styled from 'styled-components';
 import {observer} from 'mobx-react';
-import {FontItem} from '~/models/Font';
+import {FontItem, FontName} from '~/models/Font';
 import useStores from '~/hooks/useStores';
 import ArrowIcon from '~/components/icon/ArrowUpIcon';
 import ArrowDownIcon from '~/components/icon/ArrowDownIcon';
@@ -13,10 +13,12 @@ interface PropsType {
     font: FontItem;
     hide?: boolean;
     language?: LanguageType;
-    active?: boolean;
+    currentFontName?: FontName;
 }
 
-const FontListItem = ({font, hide = false, language = 'EN', active = false}: PropsType) => {
+const FontListItem = ({font, hide = false, language = 'EN', currentFontName = null}: PropsType) => {
+    const active = currentFontName !== null;
+    const isCurrent = active && font.family === currentFontName.family;
     const {fontListStore} = useStores();
     const singleStyle = font.styles.length === 1;
     const [folded, seFolded] = useState(true);
@@ -30,7 +32,7 @@ const FontListItem = ({font, hide = false, language = 'EN', active = false}: Pro
     // }
     return (
         <FontItemWrap hide={hide}>
-            <FontFamilyItem>
+            <FontFamilyItem selected={isCurrent}>
                 <FlexRowStartEndLayout>
                     <StarButton onClick={() => fontListStore.markOrUnmark(font.family)}>
                         {font.isMarked ? <StarIcon fill="#1E1E1E" /> : <StarIcon />}
@@ -86,7 +88,13 @@ const FlexRowLayout = styled.div`
 
 const FlexRowStartEndLayout = styled(FlexRowLayout)``;
 
-const FontFamilyItem = styled(FlexRowLayout)``;
+const FontFamilyItem = styled(FlexRowLayout)<{selected?: boolean}>`
+    background-color: ${(props) => (props.selected ? '#18A0FB' : '')};
+
+    :hover {
+        background-color: ${(props) => (props.selected ? '#189dfd' : '#f5f5f5')};
+    }
+`;
 
 const FontStyleItem = styled(FlexRowLayout)``;
 

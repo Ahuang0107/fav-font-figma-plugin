@@ -13,7 +13,7 @@ if (figma.currentPage.selection.length === 1 && figma.currentPage.selection[0].t
     figma.ui.postMessage({
         type: MessageType.SELECTION_CHANGE,
         data: {
-            layer: currentTextSelection,
+            layer: JSON.stringify(currentTextSelection?.fontName),
         },
     });
 }
@@ -27,7 +27,7 @@ figma.on('selectionchange', () => {
     figma.ui.postMessage({
         type: MessageType.SELECTION_CHANGE,
         data: {
-            layer: currentTextSelection,
+            layer: JSON.stringify(currentTextSelection?.fontName),
         },
     });
 });

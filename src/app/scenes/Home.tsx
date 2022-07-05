@@ -8,13 +8,14 @@ import IconButton from '~/components/button/IconButton';
 import StarIcon from '~/components/icon/StarIcon';
 import Select from '~/components/select/Select';
 import {MessageType} from '../../share/constant';
+import {FontName} from '~/models/Font';
 
 const Home = () => {
     const {fontListStore} = useStores();
     const [starSelected, setStarSelected] = useState(false);
     const options = ['字体分类选择：暂未实现该功能'];
     const [, setSelected] = useState<string>(options[0]);
-    const [currentLayer, setCurrentLayer] = useState<{id: string} | null>(null);
+    const [currentLayerFontName, setCurrentLayerFontName] = useState<FontName | null>(null);
     useEffect(() => {
         window.onmessage = (event) => {
             const {type} = event.data.pluginMessage;
@@ -24,7 +25,7 @@ const Home = () => {
                 fontListStore.initMarkedFonts(data.favStorage);
             } else if (type === MessageType.SELECTION_CHANGE) {
                 const {data} = event.data.pluginMessage;
-                setCurrentLayer(data.layer);
+                setCurrentLayerFontName(JSON.parse(data?.layer ?? null));
             }
         };
     }, []);
@@ -46,7 +47,7 @@ const Home = () => {
                         font={font}
                         key={font.family}
                         hide={starSelected && !font.isMarked}
-                        active={currentLayer !== null}
+                        currentFontName={currentLayerFontName}
                     />
                 ))}
             </ListContainer>
