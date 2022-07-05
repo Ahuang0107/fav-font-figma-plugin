@@ -48,6 +48,7 @@ const Home = () => {
                         key={font.family}
                         hide={starSelected && !font.isMarked}
                         currentFontName={currentLayerFontName}
+                        onClick={setCurrentLayerFontName}
                     />
                 ))}
             </ListContainer>

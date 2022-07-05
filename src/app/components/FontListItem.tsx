@@ -14,9 +14,10 @@ interface PropsType {
     hide?: boolean;
     language?: LanguageType;
     currentFontName?: FontName;
+    onClick: (fontName: FontName) => void;
 }
 
-const FontListItem = ({font, hide = false, language = 'EN', currentFontName = null}: PropsType) => {
+const FontListItem = ({font, hide = false, language = 'EN', currentFontName = null, onClick}: PropsType) => {
     const active = currentFontName !== null;
     const isCurrent = active && font.family === currentFontName.family;
     const {fontListStore} = useStores();
@@ -54,7 +55,11 @@ const FontListItem = ({font, hide = false, language = 'EN', currentFontName = nu
                     <Text
                         active={active}
                         selected={isCurrent}
-                        onClick={() => fontClick({family: font.family, style: font.styles[0]})}
+                        onClick={() => {
+                            const fontName = {family: font.family, style: font.styles[0]};
+                            fontClick(fontName);
+                            onClick(fontName);
+                        }}
                     >
                         {font.family}
                         {singleStyle && ` ${font.styles[0]}`}
@@ -77,7 +82,11 @@ const FontListItem = ({font, hide = false, language = 'EN', currentFontName = nu
                                     left={60}
                                     active={active}
                                     selected={isStyleCurrent}
-                                    onClick={() => fontClick({family: font.family, style: style})}
+                                    onClick={() => {
+                                        const fontName = {family: font.family, style: style};
+                                        fontClick(fontName);
+                                        onClick(fontName);
+                                    }}
                                 >
                                     {style}
                                 </Text>
