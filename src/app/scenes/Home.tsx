@@ -9,6 +9,7 @@ import StarIcon from '~/components/icon/StarIcon';
 import Select from '~/components/select/Select';
 import {MessageType} from '../../share/constant';
 import {FontName} from '~/models/Font';
+import Spinner from '~/components/Spinner';
 
 const Home = () => {
     const {fontListStore} = useStores();
@@ -16,6 +17,7 @@ const Home = () => {
     const options = ['字体分类选择：暂未实现该功能'];
     const [, setSelected] = useState<string>(options[0]);
     const [currentLayerFontName, setCurrentLayerFontName] = useState<FontName | null>(null);
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         window.onmessage = (event) => {
             const {type} = event.data.pluginMessage;
@@ -23,9 +25,12 @@ const Home = () => {
                 const {data} = event.data.pluginMessage;
                 fontListStore.initFontList(data.fontList);
                 fontListStore.initMarkedFonts(data.favStorage);
+                setLoading(false);
             } else if (type === MessageType.SELECTION_CHANGE) {
                 const {data} = event.data.pluginMessage;
                 setCurrentLayerFontName(JSON.parse(data?.layer ?? null));
+            } else if (type === MessageType.FONT_CHANGED) {
+                setLoading(false);
             }
         };
     }, []);
@@ -42,13 +47,21 @@ const Home = () => {
                 </IconButton>
             </SelectContainer>
             <ListContainer>
+                {loading && (
+                    <LoadingCover>
+                        <Spinner />
+                    </LoadingCover>
+                )}
                 {fontListStore.fontList.map((font) => (
                     <FontListItem
                         font={font}
                         key={font.family}
                         hide={starSelected && !font.isMarked}
                         currentFontName={currentLayerFontName}
-                        onClick={setCurrentLayerFontName}
+                        onClick={(fontName) => {
+                            setLoading(true);
+                            setCurrentLayerFontName(fontName);
+                        }}
                     />
                 ))}
             </ListContainer>
@@ -82,8 +95,22 @@ const ListContainer = styled.div`
     width: 100%;
     border: #f0f0f0 solid 1px;
     border-radius: 2px;
+    position: relative;
 
     overflow-y: scroll;
+`;
+
+const LoadingCover = styled.div`
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    transition: all 1s linear;
+    background-color: white;
+    opacity: 0.6;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 export default observer(Home);

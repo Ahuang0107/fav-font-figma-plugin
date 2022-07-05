@@ -50,6 +50,9 @@ Promise.all([figma.listAvailableFontsAsync(), figma.clientStorage.getAsync(STORA
             if (msg.type === MessageType.FONT_CLICK && currentTextSelection != null) {
                 figma.loadFontAsync(msg.data as FontName).then(() => {
                     currentTextSelection.fontName = msg.data as FontName;
+                    figma.ui.postMessage({
+                        type: MessageType.FONT_CHANGED,
+                    });
                 });
             }
         };
