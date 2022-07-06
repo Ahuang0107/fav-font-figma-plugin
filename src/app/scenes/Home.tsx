@@ -14,8 +14,6 @@ import Spinner from '~/components/Spinner';
 const Home = () => {
     const {fontListStore} = useStores();
     const [starSelected, setStarSelected] = useState(false);
-    const options = ['字体分类选择：暂未实现该功能'];
-    const [, setSelected] = useState<string>(options[0]);
     const [currentLayerFontName, setCurrentLayerFontName] = useState<FontName | null>(null);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
@@ -44,7 +42,7 @@ const Home = () => {
                 </LoadingCover>
             )}
             <SelectContainer>
-                <Select options={options} onChange={(v) => setSelected(v)} />
+                <Select value={'Magazine Class'} />
                 <IconButton active={starSelected} onClick={() => setStarSelected(!starSelected)}>
                     <StarIcon
                         fill={starSelected ? '#FFFFFF' : '#333333'}
