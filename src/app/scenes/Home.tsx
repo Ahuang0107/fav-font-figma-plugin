@@ -10,6 +10,7 @@ import Select from '~/components/select/Select';
 import {MessageType} from '../../share/constant';
 import {FontName} from '~/models/Font';
 import Spinner from '~/components/Spinner';
+import LocateIcon from '~/components/icon/LocateIcon';
 
 const Home = () => {
     const {fontListStore} = useStores();
@@ -43,6 +44,9 @@ const Home = () => {
             )}
             <SelectContainer>
                 <Select value={'Magazine Class'} />
+                <IconButton active={false} onClick={() => {}}>
+                    <LocateIcon />
+                </IconButton>
                 <IconButton active={starSelected} onClick={() => setStarSelected(!starSelected)}>
                     <StarIcon
                         fill={starSelected ? '#FFFFFF' : '#333333'}
