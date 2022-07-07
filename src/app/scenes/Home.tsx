@@ -19,7 +19,8 @@ const Home = () => {
     const [starSelected, setStarSelected] = useState(false);
     const [currentLayerFontName, setCurrentLayerFontName] = useState<FontName | null>(null);
     const [loading, setLoading] = useState(true);
-    const [language, setLanguage] = useState<LanguageType>('EN');
+    const languageButtonList: LanguageType[] = ['EN', 'EN_', 'CN', 'CN_'];
+    const [language, setLanguage] = useState<number>(0);
     useEffect(() => {
         window.onmessage = (event) => {
             const {type} = event.data.pluginMessage;
@@ -52,16 +53,23 @@ const Home = () => {
             <SelectContainer>
                 <Select value={'Magazine Class'} />
                 <IconButton
-                    active={false}
+                    active={language % 2 === 1}
                     onClick={() => {
-                        if (language === 'EN') {
-                            setLanguage('CN');
-                        } else {
-                            setLanguage('EN');
-                        }
+                        setLanguage(language + 1);
                     }}
                 >
-                    {language === 'EN' ? <ENIcon /> : <CHIcon />}
+                    {(() => {
+                        switch (language % languageButtonList.length) {
+                            case 0:
+                                return <ENIcon />;
+                            case 1:
+                                return <ENIcon fill="#FFF" />;
+                            case 2:
+                                return <CHIcon />;
+                            case 3:
+                                return <CHIcon fill="#FFF" />;
+                        }
+                    })()}
                 </IconButton>
                 <IconButton active={false} onClick={() => {}}>
                     <LocateIcon />
@@ -78,8 +86,8 @@ const Home = () => {
                     <FontListItem
                         font={font}
                         key={font.family}
-                        hide={starSelected && !font.isMarked}
-                        language={language}
+                        hide={(starSelected && !font.isMarked) || (!font.local && language % 2 === 1)}
+                        language={languageButtonList[language]}
                         currentFontName={currentLayerFontName}
                         onClick={(fontName, currentFontName) => {
                             setLoading(currentFontName !== null);

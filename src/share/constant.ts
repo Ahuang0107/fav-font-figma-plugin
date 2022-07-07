@@ -6,7 +6,7 @@ export const MessageType = {
     SELECTION_CHANGE: 'SELECTION_CHANGE',
 };
 
-export type LanguageType = 'EN' | 'CN';
+export type LanguageType = 'EN' | 'CN' | 'EN_' | 'CN_';
 
 // List of serif typefaces 衬线字体
 const serif = [

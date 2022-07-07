@@ -69,7 +69,7 @@ const FontListItem = ({font, hide = false, language = 'EN', currentFontName = nu
                 </FlexRowStartEndLayout>
                 <FlexRowStartEndLayout>
                     <Text hide={!font.local} right={12} fontFamily={font.family} active={active} selected={isCurrent}>
-                        {language === 'EN' ? 'Sample' : '字体样式'}
+                        {language === 'EN' || language === 'EN_' ? 'Sample' : '字体样式'}
                     </Text>
                 </FlexRowStartEndLayout>
             </FontFamilyItem>
@@ -104,7 +104,7 @@ const FontListItem = ({font, hide = false, language = 'EN', currentFontName = nu
                                     active={active}
                                     selected={isStyleCurrent}
                                 >
-                                    {language === 'EN' ? 'Sample' : '字体样式'}
+                                    {language === 'EN' || language === 'EN_' ? 'Sample' : '字体样式'}
                                 </Text>
                             </FlexRowStartEndLayout>
                         </FontStyleItem>
