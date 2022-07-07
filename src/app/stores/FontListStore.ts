@@ -1,5 +1,6 @@
 import {action, computed, makeObservable, observable} from 'mobx';
 import {Font, FontItem} from '~/models/Font';
+import {MessageType} from '../../share/constant';
 
 export class FontListStore {
     // 会存储加载来的所有字体，是按照字体family group by过的
@@ -60,6 +61,15 @@ export class FontListStore {
             this.markedFonts = [...this.markedFonts.slice(0, index), ...this.markedFonts.slice(index + 1, length)];
             this.fontList.find((item) => item.family === font).isMarked = false;
         }
+        parent.postMessage(
+            {
+                pluginMessage: {
+                    type: MessageType.ADD_OR_REMOVE_MARKED_FONT,
+                    data: JSON.stringify(this.markedFonts),
+                },
+            },
+            '*'
+        );
     };
 
     get markedFontList(): FontItem[] {

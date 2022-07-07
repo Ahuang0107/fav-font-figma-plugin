@@ -34,18 +34,20 @@ figma.on('selectionchange', () => {
 
 Promise.all([figma.listAvailableFontsAsync(), figma.clientStorage.getAsync(STORAGE_NAME)]).then(
     ([fontList, storage]) => {
-        const favStorage = storage != null ? new Set(JSON.parse(storage)) : new Set();
+        console.log('init:' + storage);
         figma.ui.postMessage({
             type: MessageType.FONT_LIST_LOADED,
             data: {
                 fontList: fontList,
-                favStorage: JSON.parse(storage),
+                favStorage: storage,
             },
         });
 
         figma.ui.onmessage = (msg) => {
             if (msg.type === MessageType.ADD_OR_REMOVE_MARKED_FONT) {
-                addOrRemoveFavFont(msg.data.family);
+                figma.clientStorage.setAsync(STORAGE_NAME, msg.data).then(() => {
+                    console.log('store with: ' + msg.data);
+                });
             }
             if (msg.type === MessageType.FONT_CLICK && currentTextSelection != null) {
                 figma
@@ -68,16 +70,5 @@ Promise.all([figma.listAvailableFontsAsync(), figma.clientStorage.getAsync(STORA
                     });
             }
         };
-
-        function addOrRemoveFavFont(font: string) {
-            if (favStorage.has(font)) {
-                favStorage.delete(font);
-            } else {
-                favStorage.add(font);
-            }
-            figma.clientStorage.setAsync(STORAGE_NAME, JSON.stringify([...favStorage])).then(() => {
-                console.log(JSON.stringify([...favStorage]));
-            });
-        }
     }
 );

@@ -23,7 +23,11 @@ const Home = () => {
             if (type === MessageType.FONT_LIST_LOADED) {
                 const {data} = event.data.pluginMessage;
                 fontListStore.initFontList(data.fontList);
-                fontListStore.initMarkedFonts(data.favStorage);
+                if (data.favStorage === null) {
+                    fontListStore.initMarkedFonts([]);
+                } else {
+                    fontListStore.initMarkedFonts(JSON.parse(data.favStorage));
+                }
                 setLoading(currentLayerFontName !== null);
             } else if (type === MessageType.SELECTION_CHANGE) {
                 const {data} = event.data.pluginMessage;
