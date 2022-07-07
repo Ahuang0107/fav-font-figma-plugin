@@ -3,7 +3,7 @@ import {MessageType} from '../share/constant';
 const STORAGE_NAME = 'favStorage';
 
 figma.showUI(__html__, {
-    width: 320,
+    width: 400,
     height: 398,
 });
 
