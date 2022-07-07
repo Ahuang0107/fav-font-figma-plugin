@@ -7,16 +7,19 @@ import FontListItem from '~/components/FontListItem';
 import IconButton from '~/components/button/IconButton';
 import StarIcon from '~/components/icon/StarIcon';
 import Select from '~/components/select/Select';
-import {MessageType} from '../../share/constant';
+import {LanguageType, MessageType} from '../../share/constant';
 import {FontName} from '~/models/Font';
 import Spinner from '~/components/Spinner';
 import LocateIcon from '~/components/icon/LocateIcon';
+import ENIcon from '~/components/icon/ENIcon';
+import CHIcon from '~/components/icon/CHIcon';
 
 const Home = () => {
     const {fontListStore} = useStores();
     const [starSelected, setStarSelected] = useState(false);
     const [currentLayerFontName, setCurrentLayerFontName] = useState<FontName | null>(null);
     const [loading, setLoading] = useState(true);
+    const [language, setLanguage] = useState<LanguageType>('EN');
     useEffect(() => {
         window.onmessage = (event) => {
             const {type} = event.data.pluginMessage;
@@ -48,6 +51,18 @@ const Home = () => {
             )}
             <SelectContainer>
                 <Select value={'Magazine Class'} />
+                <IconButton
+                    active={false}
+                    onClick={() => {
+                        if (language === 'EN') {
+                            setLanguage('CN');
+                        } else {
+                            setLanguage('EN');
+                        }
+                    }}
+                >
+                    {language === 'EN' ? <ENIcon /> : <CHIcon />}
+                </IconButton>
                 <IconButton active={false} onClick={() => {}}>
                     <LocateIcon />
                 </IconButton>
@@ -64,6 +79,7 @@ const Home = () => {
                         font={font}
                         key={font.family}
                         hide={starSelected && !font.isMarked}
+                        language={language}
                         currentFontName={currentLayerFontName}
                         onClick={(fontName, currentFontName) => {
                             setLoading(currentFontName !== null);
