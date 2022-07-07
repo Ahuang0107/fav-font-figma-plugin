@@ -1,6 +1,6 @@
 import {action, computed, makeObservable, observable} from 'mobx';
 import {Font, FontItem} from '~/models/Font';
-import {MessageType} from '../../share/constant';
+import {MessageType, microsoft_windows, typefaceGroups} from '../../share/constant';
 
 export class FontListStore {
     // 会存储加载来的所有字体，是按照字体family group by过的
@@ -25,22 +25,38 @@ export class FontListStore {
         // 默认系统返回的font list是排序好的
         let currentFamily = null;
         let styles = [];
+        let group = [];
         fontList.forEach((font) => {
             if (currentFamily != null && currentFamily !== font.fontName.family) {
+                typefaceGroups.forEach((it) => {
+                    if (it.value.indexOf(currentFamily) > -1) {
+                        group.push(it.key);
+                    }
+                });
                 this.fontList.push({
                     family: currentFamily,
                     styles,
                     isMarked: false,
+                    group: group,
+                    local: microsoft_windows.indexOf(currentFamily) > -1,
                 });
                 styles = [];
+                group = [];
             }
             currentFamily = font.fontName.family;
             styles.push(font.fontName.style);
+        });
+        typefaceGroups.forEach((it) => {
+            if (it.value.indexOf(currentFamily) > -1) {
+                group.push(it.key);
+            }
         });
         this.fontList.push({
             family: currentFamily,
             styles,
             isMarked: false,
+            group: group,
+            local: microsoft_windows.indexOf(currentFamily) > -1,
         });
     };
 

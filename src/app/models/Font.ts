@@ -11,4 +11,6 @@ export type FontItem = {
     family: string;
     styles: string[];
     isMarked: boolean;
+    group: string[];
+    local: boolean;
 };

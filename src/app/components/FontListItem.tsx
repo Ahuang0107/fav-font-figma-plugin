@@ -68,7 +68,7 @@ const FontListItem = ({font, hide = false, language = 'EN', currentFontName = nu
                     </Text>
                 </FlexRowStartEndLayout>
                 <FlexRowStartEndLayout>
-                    <Text right={12} fontFamily={font.family} active={active} selected={isCurrent}>
+                    <Text hide={!font.local} right={12} fontFamily={font.family} active={active} selected={isCurrent}>
                         {language === 'EN' ? 'Sample' : '字体样式'}
                     </Text>
                 </FlexRowStartEndLayout>
@@ -97,6 +97,7 @@ const FontListItem = ({font, hide = false, language = 'EN', currentFontName = nu
                             </FlexRowStartEndLayout>
                             <FlexRowStartEndLayout>
                                 <Text
+                                    hide={!font.local}
                                     right={12}
                                     fontFamily={font.family}
                                     fontStyle={style}
@@ -156,13 +157,17 @@ const FontStyleItem = styled(FlexRowLayout)`
     }
 `;
 
-interface IconButtonProps {
+interface HideProps {
     readonly hide?: boolean;
 }
 
-const IconButton = styled.span.attrs<IconButtonProps, {visibility: string}>(({hide}) => ({
+interface HideChangeProps {
+    readonly visibility: string;
+}
+
+const IconButton = styled.span.attrs<HideProps, HideChangeProps>(({hide}) => ({
     visibility: hide ? 'hidden' : 'visible',
-}))<IconButtonProps>`
+}))<HideProps>`
     visibility: ${(props) => props.visibility};
     height: 28px;
 
@@ -181,7 +186,7 @@ const FoldButton = styled(IconButton)`
     margin-left: 4px;
 `;
 
-interface TextProps {
+interface TextProps extends HideProps {
     readonly left?: number;
     readonly right?: number;
     readonly fontFamily?: string;
@@ -190,7 +195,7 @@ interface TextProps {
     readonly selected: boolean;
 }
 
-interface TextChangeProps {
+interface TextChangeProps extends HideChangeProps {
     readonly marginLeft: string;
     readonly marginRight: string;
     readonly cursor: string;
@@ -205,7 +210,9 @@ const Text = styled.span.attrs<TextProps, TextChangeProps>((props) => ({
     cursor: props.active ? 'pointer' : 'auto',
     color: props.active ? (props.selected ? '#FFF' : '#000') : '#B2B2B2',
     fontFamily: `${props.fontFamily + ',Inter, sans-serif' ?? 'Inter, sans-serif'}`,
+    visibility: props.hide ? 'hidden' : 'visible',
 }))<TextProps>`
+    visibility: ${(props) => props.visibility};
     height: 28px;
     line-height: 28px;
     margin-left: ${({marginLeft}) => marginLeft};
