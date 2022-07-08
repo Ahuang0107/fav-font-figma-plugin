@@ -47,7 +47,7 @@ const Home = () => {
     return (
         <Container>
             {loading && (
-                <LoadingCover>
+                <LoadingCover onClick={(e) => e.stopPropagation()}>
                     <Spinner />
                 </LoadingCover>
             )}
@@ -152,6 +152,8 @@ const LoadingCover = styled.div`
     transition: all 1s linear;
     background-color: white;
     opacity: 0.6;
+    user-select: none;
+    z-index: 100;
 
     display: flex;
     justify-content: center;
