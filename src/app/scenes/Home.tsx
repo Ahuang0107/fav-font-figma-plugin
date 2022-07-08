@@ -7,7 +7,7 @@ import FontListItem from '~/components/FontListItem';
 import IconButton from '~/components/button/IconButton';
 import StarIcon from '~/components/icon/StarIcon';
 import Select from '~/components/select/Select';
-import {LanguageType, MessageType} from '../../share/constant';
+import {LanguageType, MessageType, typefaceGroups} from '../../share/constant';
 import {FontName} from '~/models/Font';
 import Spinner from '~/components/Spinner';
 import LocateIcon from '~/components/icon/LocateIcon';
@@ -21,6 +21,7 @@ const Home = () => {
     const [loading, setLoading] = useState(true);
     const languageButtonList: LanguageType[] = ['EN', 'EN_', 'CN', 'CN_'];
     const [language, setLanguage] = useState<number>(0);
+    const [group, setGroup] = useState<string | null>(null);
     useEffect(() => {
         window.onmessage = (event) => {
             const {type} = event.data.pluginMessage;
@@ -51,7 +52,8 @@ const Home = () => {
                 </LoadingCover>
             )}
             <SelectContainer>
-                <Select value={'Magazine Class'} />
+                <Select value={group} setValue={setGroup} options={typefaceGroups.map((it) => it.key)} />
+                <Margin />
                 <IconButton
                     active={language % 2 === 1}
                     onClick={() => {
@@ -71,9 +73,11 @@ const Home = () => {
                         }
                     })()}
                 </IconButton>
+                <Margin />
                 <IconButton active={false} onClick={() => {}}>
                     <LocateIcon />
                 </IconButton>
+                <Margin />
                 <IconButton active={starSelected} onClick={() => setStarSelected(!starSelected)}>
                     <StarIcon
                         fill={starSelected ? '#FFFFFF' : '#333333'}
@@ -86,7 +90,11 @@ const Home = () => {
                     <FontListItem
                         font={font}
                         key={font.family}
-                        hide={(starSelected && !font.isMarked) || (!font.local && language % 2 === 1)}
+                        hide={
+                            (starSelected && !font.isMarked) ||
+                            (!font.local && language % 2 === 1) ||
+                            (group !== null && font.group.indexOf(group) === -1)
+                        }
                         language={languageButtonList[language]}
                         currentFontName={currentLayerFontName}
                         onClick={(fontName, currentFontName) => {
@@ -118,6 +126,10 @@ const SelectContainer = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+`;
+
+const Margin = styled.span`
+    width: 8px;
 `;
 
 const ListContainer = styled.div`
