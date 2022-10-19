@@ -28,7 +28,7 @@ const Home = () => {
             if (type === MessageType.FONT_LIST_LOADED) {
                 const {data} = event.data.pluginMessage;
                 fontListStore.initFontList(data.fontList);
-                if (data.favStorage === null) {
+                if (data.favStorage === null || data.favStorage === undefined) {
                     fontListStore.initMarkedFonts([]);
                 } else {
                     fontListStore.initMarkedFonts(JSON.parse(data.favStorage));
